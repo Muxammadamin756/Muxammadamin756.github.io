@@ -1,0 +1,29 @@
+{
+  "name": "arabic-learning-app",
+  "version": "1.0.0",
+  "description": "Arab tili o'quv platformasi",
+  "main": "visitor-server.js",
+  "scripts": {
+    "start": "node visitor-server.js",
+    "dev": "nodemon visitor-server.js",
+    "install-deps": "npm install express sqlite3 cors"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "@google-cloud/text-to-speech": "^5.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "keywords": [
+    "arabic",
+    "learning",
+    "education",
+    "uzbek"
+  ],
+  "author": "Muhammadamin",
+  "license": "MIT"
+}

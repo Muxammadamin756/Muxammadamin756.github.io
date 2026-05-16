@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Test</title>
+    <style>
+        body {
+            background: #111f3f;
+            color: #fff;
+            font-family: Arial;
+            text-align: center;
+            padding: 40px;
+        }
+        .button {
+            padding: 10px 20px;
+            margin: 10px;
+            background: #00c3ff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .button:hover {
+            background: #009fcc;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #232323;
+            border-radius: 8px;
+            color: #00c3ff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Arab Alifbosi - Audio Test</h1>
+    
+    <div>
+        <button class="button" onclick="testAudio('./OVoz/Alif.m4a')">Alif (.m4a) ijro etish</button>
+        <button class="button" onclick="testAudio('./OVoz/baa.m4a')">Ba (.m4a) ijro etish</button>
+        <button class="button" onclick="testAudio('./OVoz/ayn.m4a')">Ayn (.m4a) ijro etish</button>
+        <button class="button" onclick="testSpeech('أَلِف')">Web Speech Alif ijro etish</button>
+    </div>
+    
+    <div class="result" id="result">Test natijalari bu yerda chiqadi</div>
+    
+    <script>
+        function testAudio(path) {
+            const audio = new Audio();
+            audio.src = path;
+            audio.onplay = () => {
+                updateResult(`▶ ${path} ijro etilmoqda...`);
+            };
+            audio.onerror = () => {
+                updateResult(`❌ Xatolik: ${path} topilmadi!`);
+            };
+            audio.onended = () => {
+                updateResult(`✓ ${path} muvaffaqiyatli ijro etildi`);
+            };
+            audio.play().catch(err => {
+                updateResult(`❌ Audio ijro xatolik: ${err.message}`);
+            });
+        }
+        
+        function testSpeech(text) {
+            if (!window.speechSynthesis) {
+                updateResult('❌ Speech Synthesis brauzerda qo\'llab-quvvatlanmadi');
+                return;
+            }
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'ar-SA';
+            msg.rate = 0.9;
+            window.speechSynthesis.onvoiceschanged = () => {
+                const voices = window.speechSynthesis.getVoices();
+                const arabicVoice = voices.find(v => v.lang.includes('ar'));
+                if (arabicVoice) msg.voice = arabicVoice;
+                updateResult(`▶ Web Speech ijro etilmoqda: "${text}"`);
+                window.speechSynthesis.speak(msg);
+            };
+            updateResult(`▶ Web Speech ijro etilmoqda: "${text}"`);
+            window.speechSynthesis.speak(msg);
+        }
+        
+        function updateResult(text) {
+            document.getElementById('result').textContent = text;
+        }
+    </script>
+</body>
+</html>

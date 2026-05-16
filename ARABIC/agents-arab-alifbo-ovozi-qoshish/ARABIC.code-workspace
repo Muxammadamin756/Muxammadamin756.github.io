@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"name": "ARABIC",
+			"path": "."
+		},
+		{
+			"name": "qara",
+			"path": "../../Documents/GitHub/qara"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "ARABIC",
+		"liveServer.settings.port": 5501
+	}
+}

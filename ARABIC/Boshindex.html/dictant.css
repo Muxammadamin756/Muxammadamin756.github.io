@@ -1,0 +1,335 @@
+:root {
+    --brand: #00c3ff;
+    --bg: #0f1724;
+    --card: #0b1220;
+    --muted: #94a3b8;
+    --text: #e6eef8;
+    --surface: rgba(255, 255, 255, 0.04);
+    --surface-strong: rgba(255, 255, 255, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(180deg, #071226 0%, #071b2b 60%);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 18px;
+}
+
+nav {
+    width: 100%;
+    max-width: 980px;
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+nav a {
+    color: var(--brand);
+    text-decoration: none;
+    margin: 0 8px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+nav a:hover,
+nav a.active {
+    background: rgba(0, 195, 255, 0.16);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.wrap {
+    width: 100%;
+    max-width: 980px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 16px 50px rgba(2, 6, 23, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+h1 {
+    font-size: clamp(1.45rem, 2.8vw, 2.3rem);
+    margin: 0;
+    color: #fff;
+    line-height: 1.1;
+}
+
+.controls,
+.controls-row,
+.record-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.btn {
+    background: var(--brand);
+    color: #001;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 10px 24px rgba(0, 195, 255, 0.16);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.btn.secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--muted);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.btn:hover,
+.btn:focus-visible {
+    transform: translateY(-1px);
+    opacity: 0.96;
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.area {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+}
+
+.panel {
+    background: var(--card);
+    padding: 18px;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.player-title {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 160px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(255, 255, 255, 0.08);
+    color: #eaf6ff;
+    padding: 16px;
+    border-radius: 14px;
+    resize: vertical;
+    font-size: 1rem;
+    line-height: 1.7;
+    outline: none;
+}
+
+textarea:focus {
+    border-color: rgba(0, 195, 255, 0.35);
+    box-shadow: 0 0 0 4px rgba(0, 195, 255, 0.08);
+}
+
+.meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 0.95rem;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.small {
+    font-size: 0.94rem;
+    color: var(--muted);
+}
+
+.score {
+    font-weight: 800;
+    color: var(--brand);
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.sentence-box {
+    min-height: 120px;
+    padding: 18px;
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.03));
+    color: #fff;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    gap: 10px;
+}
+
+.sentence-text {
+    font-size: clamp(1.7rem, 3vw, 2.2rem);
+    direction: rtl;
+    letter-spacing: 0.08em;
+}
+
+.sentence-text.uzbek-text {
+    direction: ltr;
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+    letter-spacing: 0.02em;
+}
+
+.translation {
+    font-size: 1rem;
+    color: var(--muted);
+    direction: ltr;
+}
+
+.record-status {
+    align-self: center;
+    display: flex;
+    align-items: center;
+}
+
+.record-ind {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #7f8c8d;
+    margin-left: 8px;
+}
+
+.record-ind.on {
+    background: #f33;
+    box-shadow: 0 0 12px #f33;
+}
+
+.record-actions {
+    margin-top: 12px;
+    width: 100%;
+}
+
+.translation-panel {
+    margin-top: 18px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.translation-box {
+    min-height: 70px;
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    font-size: 0.98rem;
+    line-height: 1.7;
+    text-align: center;
+}
+
+.button-row {
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.settings-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.input-inline {
+    width: 60px;
+    margin-left: 8px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+    color: #eaf6ff;
+}
+
+footer {
+    margin-top: 24px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+@media (max-width: 880px) {
+    .area {
+        grid-template-columns: 1fr;
+    }
+
+    .right-column {
+        order: 2;
+    }
+}
+
+@media (max-width: 720px) {
+    nav a {
+        display: inline-block;
+        margin: 6px 6px;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 14px;
+    }
+
+    .wrap {
+        padding: 18px;
+    }
+
+    header {
+        gap: 12px;
+    }
+
+    h1 {
+        font-size: 1.2rem;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 12px;
+    }
+
+    .controls,
+    .controls-row,
+    .record-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .area {
+        gap: 16px;
+    }
+
+    .sentence-text {
+        font-size: 1.6rem;
+    }
+}

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diktant - Zamonaviy</title>
+    <link rel="stylesheet" href="../Boshindex.html/stayle.css" />
+    <link rel="stylesheet" href="./dictant.css">
+</head>
+
+<body>
+    <nav>
+        <a href="/Boshindex.html/index.html">Bosh sahifa</a>
+
+
+        <a href="./diktant.html" class="active">Diktant</a>
+        <a href="./profil.html">Profil</a>
+        <a href="./foydali_soz.html">Foydali so‘zlar</a>
+        <a href="./alifbe.html">Arab Alifbosi</a>
+        <a href="./Arab_tili_haqida_tushuncha.html">Qoidalar</a>
+    </nav>
+
+    <div class="wrap">
+        <header>
+            <h1>Diktant — tingla, yoz va tekshir</h1>
+            <div class="controls">
+                <button id="playBtn" class="btn">start</button>
+                <button id="nextBtn" class="btn secondary">Keyingi</button>
+                <button id="checkBtn" class="btn">Tekshir</button>
+                <button id="showBtn" class="btn secondary">Javobni ko'rsat</button>
+                <button id="translateBtn" class="btn secondary">🌍 Arabcha javob</button>
+            </div>
+        </header>
+
+        <div class="area">
+            <div class="panel">
+                <div class="player-title">Quyidagi o‘zbek gapni arabchada yozing:</div>
+                <textarea id="answer" placeholder="Bu yerga arabcha gapni yozing..."></textarea>
+                <div class="meta">
+                    <div class="small">So'rovlar: <span id="round">0</span>/<span id="total">0</span></div>
+                    <div class="small">Ball: <span id="score" class="score">0</span></div>
+                </div>
+                <div class="controls-row record-actions">
+                    <button id="recordStart" class="btn secondary">🎤 Yozib oling</button>
+                    <button id="recordStop" class="btn secondary">⏹ To'xtat</button>
+                    <button id="playRec" class="btn secondary">▶ Tinglash</button>
+                    <div id="recStatus" class="small record-status">Status: <span id="recText">tayyor</span>
+                        <span id="recDot" class="record-ind"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="panel">
+                    <div class="player-title">Hozirgi so‘z (o‘zbekcha)</div>
+                    <div id="sentenceBox" class="sentence-box">Uzbekcha so‘z bu yerda chiqadi</div>
+                    <div class="translation-panel">
+                        <div class="player-title">Arabcha javob</div>
+                        <div id="translationBox" class="translation-box">Javob yashirilgan. "Arabcha javob" tugmasini bosing.</div>
+                    </div>
+                    <div class="controls-row button-row">
+                        <button id="replayBtn" class="btn secondary">🔁 Qayta tingla</button>
+                        <button id="revealBtn" class="btn">👁‍🗨 Javobni ko'rsat</button>
+
+                <div class="panel">
+                    <div class="player-title">Sozlamalar</div>
+                    <div class="settings-panel">
+                        <label class="small">Takrorlashlar: <input id="repeatCount" type="number" min="1" max="5"
+                                value="2" class="input-inline"></label>
+                        <label class="small">Til (ovoz):
+                            <select id="voiceSelect">
+                                <option value="ar-SA">Arabic (Saudi)</option>
+                                <option value="ar-EG">Arabic (Egypt)</option>
+                            </select>
+                        </label>
+                        <label class="small">Seans uzunligi:
+                            <select id="lenSelect">
+                                <option value="5">5 ta gap</option>
+                                <option value="10" selected>10 ta gap</option>
+                                <option value="15">15 ta gap</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>Mobil uchun mos va zamonaviy dizayn · Dastlabki versiya</footer>
+    </div>
+
+    <script>
+        // Sadə zamonaviy diktant funksionalligi
+        // har bir element — arabcha gap va uning o'zbek tarjimasi
+        const sentences = [
+            { ar: "السَّلَامُ عَلَيْكُمْ", uz: "Assalomu alaykum" },
+            { ar: "كَيْفَ حَالُكَ؟", uz: "Qalaysiz? / Qanday ahvolda siz?" },
+            { ar: "أَيْنَ الْمَكْتَبُ؟", uz: "Ofis qayerda?" },
+            { ar: "هَذَا كِتَابٌ جَدِيدٌ", uz: "Bu yangi kitob." },
+            { ar: "أُحِبُّ تَعَلُّمَ الْعَرَبِيَّةِ", uz: "Men arab tilini o'rganishni yaxshi ko'raman." },
+            { ar: "الطَّقْسُ جَمِيلٌ الْيَوْمَ", uz: "Bugun havo go'zal." },
+            { ar: "هَلْ أَنْتَ مُسْتَعِدٌّ؟", uz: "Siz tayyormisiz?" },
+            { ar: "شُكْرًا جَزِيلًا", uz: "Katta rahmat." },
+            { ar: "مَوْعِدُنَا فِي السَّاعَةِ الثَّالِثَةِ", uz: "Bizning uchrashuv uchinchi soatda." },
+            { ar: "أَيْنَ الْحَمَّامُ؟", uz: "Hammom qayerda?" },
+            { ar: "هَذِهِ سَيَّارَةٌ سَرِيعَةٌ", uz: "Bu tez avtomobil." },
+            { ar: "أَذْهَبُ إِلَى الْمَدْرَسَةِ", uz: "Men maktabga boraman." }
+        ];
+
+        // UI elems
+        const playBtn = document.getElementById('playBtn');
+        const replayBtn = document.getElementById('replayBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const checkBtn = document.getElementById('checkBtn');
+        const showBtn = document.getElementById('showBtn');
+        const revealBtn = document.getElementById('revealBtn');
+        const sentenceBox = document.getElementById('sentenceBox');
+        const answer = document.getElementById('answer');
+        const roundEl = document.getElementById('round');
+        const totalEl = document.getElementById('total');
+        const scoreEl = document.getElementById('score');
+        const repeatCount = document.getElementById('repeatCount');
+        const voiceSelect = document.getElementById('voiceSelect');
+        const lenSelect = document.getElementById('lenSelect');
+        const recStart = document.getElementById('recordStart');
+        const recStop = document.getElementById('recordStop');
+        const playRec = document.getElementById('playRec');
+        const recText = document.getElementById('recText');
+        const recDot = document.getElementById('recDot');
+        const translateBtn = document.getElementById('translateBtn');
+        const translationBox = document.getElementById('translationBox');
+
+        let pool = [];
+        let currentIdx = -1;
+        let score = 0;
+        let rounds = 10;
+        let translationVisible = false;
+        let mediaRecorder, audioBlob, audioUrl;
+        let voices = [];
+
+        function pickPool(n) {
+            const arr = [...sentences];
+            shuffle(arr);
+            pool = arr.slice(0, n);
+            totalEl.textContent = pool.length;
+            roundEl.textContent = 0;
+            score = 0;
+            scoreEl.textContent = score;
+            currentIdx = -1;
+            sentenceBox.textContent = "Uzbekcha so‘z bu yerda chiqadi";
+            answer.value = "";
+            translationVisible = false;
+            updateTranslationPanel();
+        }
+
+        function shuffle(a) {
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+        }
+
+        function updateTranslationPanel() {
+            if (!translationBox) return;
+            if (currentIdx < 0) {
+                translationBox.textContent = 'Javob yashirilgan. "Arabcha javob" tugmasini bosing.';
+                if (translateBtn) translateBtn.textContent = '🌍 Arabcha javob';
+                return;
+            }
+            if (translationVisible) {
+                translationBox.textContent = pool[currentIdx].ar;
+                if (translateBtn) translateBtn.textContent = '🌍 Javobni yashirish';
+            } else {
+                translationBox.textContent = 'Javob yashirilgan. "Arabcha javob" tugmasini bosing.';
+                if (translateBtn) translateBtn.textContent = '🌍 Arabcha javob';
+            }
+        }
+
+        function loadVoices() {
+            voices = window.speechSynthesis.getVoices() || [];
+        }
+
+        function speakSentence(text) {
+            if (!window.speechSynthesis) return;
+            const count = Math.max(1, parseInt(repeatCount.value, 10) || 1);
+            window.speechSynthesis.cancel();
+            for (let i = 0; i < count; i++) {
+                speak(text, voiceSelect.value || 'ar-SA');
+            }
+        }
+
+        function speak(text, lang = 'ar-SA') {
+            if (!window.speechSynthesis) return;
+            window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = lang;
+            utter.rate = 0.95;
+            utter.pitch = 1;
+            const voice = voices.find(v => v.lang.toLowerCase().startsWith(lang.toLowerCase()));
+            if (voice) utter.voice = voice;
+            window.speechSynthesis.speak(utter);
+        }
+
+        function next() {
+            if (pool.length === 0) pickPool(rounds);
+            currentIdx++;
+            if (currentIdx >= pool.length) {
+                currentIdx = 0;
+                pickPool(rounds);
+            }
+            roundEl.textContent = currentIdx + 1;
+            answer.value = "";
+            translationVisible = false;
+            updateTranslationPanel();
+            sentenceBox.innerHTML = `
+                <div class="sentence-text uzbek-text">${pool[currentIdx].uz}</div>
+            `;
+            speakSentence(pool[currentIdx].ar);
+        }
+
+        function normalize(s) {
+            return s.toLowerCase().replace(/[\u064B-\u0652]/g, '') // remove Arabic diacritics
+                .replace(/[^\p{L}\p{N}]+/gu, '').trim();
+        }
+
+        function check() {
+            if (currentIdx < 0) return;
+            const user = normalize(answer.value);
+            const correct = normalize(pool[currentIdx].ar);
+            if (!user) {
+                alert("Iltimos yozing.");
+                return;
+            }
+            if (user === correct) {
+                score += 1;
+                scoreEl.textContent = score;
+                flash("To'g'ri ✓", true);
+            } else {
+                flash("Noto'g'ri ✗  —  To'g'ri: " + pool[currentIdx].ar + " — " + pool[currentIdx].uz, false);
+            }
+            setTimeout(next, 900);
+        }
+
+        function flash(msg, ok) {
+            const prev = document.createElement('div');
+            prev.textContent = msg;
+            prev.style.position = 'fixed';
+            prev.style.right = '18px';
+            prev.style.top = '18px';
+            prev.style.padding = '10px 14px';
+            prev.style.borderRadius = '10px';
+            prev.style.background = ok ? "linear-gradient(90deg,#0ff, #0af)" : "linear-gradient(90deg,#f66,#c33)";
+            prev.style.color = '#001';
+            prev.style.zIndex = 9999;
+            document.body.appendChild(prev);
+            setTimeout(() => prev.remove(), 1400);
+        }
+
+        function reveal() {
+            if (currentIdx < 0) return;
+            translationVisible = true;
+            updateTranslationPanel();
+        }
+
+        // Recording (optional pronunciation recording)
+        recStart.onclick = async () => {
+            if (!navigator.mediaDevices) return alert("Mikrofon qo'llab-quvvatlanmaydi");
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                const chunks = [];
+                mediaRecorder.ondataavailable = e => chunks.push(e.data);
+                mediaRecorder.onstop = () => {
+                    audioBlob = new Blob(chunks, { type: 'audio/webm' });
+                    audioUrl = URL.createObjectURL(audioBlob);
+                    recText.textContent = "saqlandi";
+                    recDot.classList.add('on');
+                }
+                mediaRecorder.start();
+                recText.textContent = "yozilmoqda";
+                recDot.classList.add('on');
+            } catch (e) {
+                alert("Mikrofonga ruxsat berilmadi");
+            }
+        };
+        recStop.onclick = () => { if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop(); recDot.classList.remove('on'); };
+        playRec.onclick = () => { if (audioUrl) new Audio(audioUrl).play(); else alert("Oldin yozing"); };
+
+        // Wire buttons
+        playBtn.onclick = () => {
+            if (currentIdx < 0) next(); else {
+                sentenceBox.innerHTML = `
+                <div class="sentence-text uzbek-text">${pool[currentIdx].uz}</div>
+            `;
+                translationVisible = false;
+                updateTranslationPanel();
+                speakSentence(pool[currentIdx].ar);
+            }
+        }
+        replayBtn.onclick = () => {
+            if (currentIdx >= 0) {
+                sentenceBox.innerHTML = `
+                <div class="sentence-text uzbek-text">${pool[currentIdx].uz}</div>
+            `;
+                translationVisible = false;
+                updateTranslationPanel();
+                speakSentence(pool[currentIdx].ar);
+            } else alert("Avval gapni boshlang");
+        }
+        nextBtn.onclick = () => next();
+        checkBtn.onclick = () => check();
+        showBtn.onclick = () => reveal();
+        revealBtn.onclick = () => reveal();
+        translateBtn.onclick = () => {
+            if (currentIdx < 0) return;
+            translationVisible = !translationVisible;
+            updateTranslationPanel();
+        };
+
+        // init
+        lenSelect.onchange = () => {
+            rounds = parseInt(lenSelect.value, 10) || 10;
+            pickPool(rounds);
+        };
+
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+        loadVoices();
+
+        // start default
+        rounds = parseInt(lenSelect.value, 10) || 10;
+        pickPool(rounds);
+
+        // keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { check(); }
+            if (e.key === ' ' && document.activeElement.tagName !== 'TEXTAREA') { e.preventDefault(); playBtn.click(); }
+        });
+    </script>
+</body>
+
+</html>
