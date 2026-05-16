@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Foydali arab so‘zlar</title>
+    <link rel="stylesheet" href="stayle.css">
+    <link rel="stylesheet" href="foydalik_sozlar_rrr.css">
+</head>
+
+<body>
+    <nav>
+        <a href="/Boshindex.html/index.html">Bosh sahifa</a>
+        <a href="./diktant.html" id="diktantLink">Diktant</a>
+        <a href="profil.html">Profil</a>
+        <a href="./malumot.html">murojat uchun</a>
+        <a href="foydali_soz.html" class="active">Foydali so‘zlar</a>
+        <a href="./alifbe.html">Arab Alifbosi</a>
+        <a href="./Arab_tili_haqida_tushuncha.html">Qoidalar</a>
+    </nav>
+    <div id="alertBox">
+        2 soniya kuting...
+    </div>
+    <div class="container">
+        <div class="hero-headline">
+            <h2>Foydali arab so‘zlar bilan tanishing</h2>
+            <!-- <p>Bu sahifa siz uchun eng kerakli so‘zlarni yig‘di. Kartochkani bosing va tarjimasini ko‘ring, arabcha talaffuzini tinglang.</p> -->
+        </div>
+
+        <div class="word-meta">Jami so‘zlar: <span id="wordCount">0</span></div>
+        <div class="flashcards" id="flashcards"></div>
+        <div class="button-row">
+            <a class="nav-action" href="index.html">⬅ Bosh sahifa</a>
+        </div>
+    </div>
+    <script>
+        // Diktant linki bosilganda ogohlantirish chiqadi va keyin sahifa ochiladi
+        document.getElementById('diktantLink').onclick = function (e) {
+            e.preventDefault();
+            const href = this.getAttribute('href');
+            const alertBox = document.getElementById('alertBox');
+            alertBox.style.display = "block";
+            alertBox.style.animation = "fadeInAlert 0.4s";
+            // ko'rsatib bo'lgach, diktant sahifasiga o'tamiz
+            setTimeout(() => {
+                alertBox.style.display = "none";
+                window.location.href = href;
+            }, 800); // 800ms keyin yo'naltirish; xohlasangiz kamaytiring/ko'paytiring
+        };
+
+        // So‘zlar ro‘yxati
+        const words = [
+            { uz: "Salom", ar: "السَّلَامُ عَلَيْكُمْ", tr: "Assalomu alaykum" },
+            { uz: "Xayr", ar: "مَعَ السَّلَامَةِ", tr: "Xayr, salomat bo‘ling" },
+            { uz: "Rahmat", ar: "شُكْرًا", tr: "Rahmat" },
+            { uz: "Iltimos", ar: "مِنْ فَضْلِكَ", tr: "Iltimos" },
+            { uz: "Ha", ar: "نَعَمْ", tr: "Ha" },
+            { uz: "Yo‘q", ar: "لَا", tr: "Yo‘q" },
+            { uz: "Kechirasiz", ar: "عَفْوًا", tr: "Kechirasiz" },
+            { uz: "Qayerda?", ar: "أَيْنَ؟", tr: "Qayerda?" },
+            { uz: "Nechta?", ar: "كَمْ؟", tr: "Nechta?" },
+            { uz: "Nima?", ar: "مَاذَا؟", tr: "Nima?" },
+            { uz: "Kim?", ar: "مَنْ؟", tr: "Kim?" },
+            { uz: "Qanday?", ar: "كَيْفَ؟", tr: "Qanday?" },
+            { uz: "Qachon?", ar: "مَتَى؟", tr: "Qachon?" },
+            { uz: "Qayerga?", ar: "إِلَى أَيْنَ؟", tr: "Qayerga?" },
+            { uz: "Sabah hayr", ar: "صَبَاحُ الْخَيْرِ", tr: "Xayrli tong" },
+            { uz: "Kech hayr", ar: "مَسَاءُ الْخَيْرِ", tr: "Xayrli kech" },
+            { uz: "Ajoyib", ar: "رَائِعٌ", tr: "Ajoyib" },
+            { uz: "Yaxshi", ar: "جَيِّدٌ", tr: "Yaxshi" },
+            { uz: "Yomon", ar: "سَيِّئٌ", tr: "Yomon" },
+            { uz: "Katta", ar: "كَبِيرٌ", tr: "Katta" },
+            { uz: "Kichik", ar: "صَغِيرٌ", tr: "Kichik" },
+            { uz: "Yangi", ar: "جَدِيدٌ", tr: "Yangi" },
+            { uz: "Eski", ar: "قَدِيمٌ", tr: "Eski" },
+            { uz: "Oson", ar: "سَهْلٌ", tr: "Oson" },
+            { uz: "Qiyin", ar: "صَعْبٌ", tr: "Qiyin" },
+            { uz: "Ish", ar: "عَمَلٌ", tr: "Ish" },
+            { uz: "Pul", ar: "مَالٌ", tr: "Pul" },
+            { uz: "Vaqt", ar: "وَقْتٌ", tr: "Vaqt" },
+            { uz: "Soat", ar: "سَاعَةٌ", tr: "Soat" },
+            { uz: "Do‘st", ar: "صَدِيقٌ", tr: "Do‘st" },
+            { uz: "Oila", ar: "عَائِلَةٌ", tr: "Oila" },
+            { uz: "Uydagi", ar: "فِي الْبَيْتِ", tr: "Uyda" },
+            { uz: "Maktab", ar: "مَدْرَسَةٌ", tr: "Maktab" },
+            { uz: "O‘qituvchi (erkak)", ar: "مُعَلِّمٌ", tr: "O‘qituvchi" },
+            { uz: "O‘qituvchi (ayol)", ar: "مُعَلِّمَةٌ", tr: "O‘qituvchi (ayol)" },
+            { uz: "Kitob", ar: "كِتَابٌ", tr: "Kitob" },
+            { uz: "Ruchka", ar: "قَلَمٌ", tr: "Ruchka" },
+            { uz: "Suv", ar: "مَاءٌ", tr: "Suv" },
+            { uz: "Non", ar: "خُبْزٌ", tr: "Non" },
+            { uz: "Taom", ar: "طَعَامٌ", tr: "Taom" },
+            { uz: "Mahsulot", ar: "مُنْتَجٌ", tr: "Mahsulot" },
+            { uz: "Bozor", ar: "سُوقٌ", tr: "Bozor" },
+            { uz: "Do‘kon", ar: "دُكَّانٌ", tr: "Do‘kon" },
+            { uz: "Shahar", ar: "مَدِينَةٌ", tr: "Shahar" },
+            { uz: "Qishloq", ar: "قَرْيَةٌ", tr: "Qishloq" },
+            { uz: "Mashina", ar: "سَيَّارَةٌ", tr: "Mashina" },
+            { uz: "Transport", ar: "نَقْلٌ", tr: "Transport" },
+            { uz: "Havo", ar: "هَوَاءٌ", tr: "Havo" },
+            { uz: "Issiq", ar: "حَارٌّ", tr: "Issiq" },
+            { uz: "Sovuq", ar: "بَارِدٌ", tr: "Sovuq" },
+            { uz: "Tinchlik", ar: "سَلَامٌ", tr: "Tinchlik" },
+            { uz: "Hayot", ar: "حَيَاةٌ", tr: "Hayot" },
+            { uz: "Qalb", ar: "قَلْبٌ", tr: "Qalb" },
+            { uz: "Dunyo", ar: "عَالَمٌ", tr: "Dunyo" },
+            { uz: "Ona til", ar: "اللُّغَةُ الأُمٌّ", tr: "Ona til" },
+            { uz: "Doim", ar: "دَائِمًا", tr: "Doim" }
+        ];
+
+        // Kartochkalarni chiqarish
+        const flashcards = document.getElementById('flashcards');
+        words.forEach((w, i) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="arabic">${w.ar}</div>
+                <div>${w.uz}</div>
+                <button class="sound-btn" title="Ovoz chiqarish" onclick="event.stopPropagation(); speak('${w.ar}')">
+                    Arabic
+                </button>
+            `;
+            card.onclick = function () {
+                if (card.classList.contains('flipped')) {
+                    card.innerHTML = `
+                        <div class="arabic">${w.ar}</div>
+                        <div>${w.uz}</div>
+                        <button class="sound-btn" title="Ovoz chiqarish" onclick="event.stopPropagation(); speak('${w.ar}')">🔊</button>
+                    `;
+                    card.classList.remove('flipped');
+                } else {
+                    card.innerHTML = `
+                        <div>${w.tr}</div>
+                        <div class="arabic">${w.ar}</div>
+                        <button class="sound-btn" title="Ovoz chiqarish" onclick="event.stopPropagation(); speak('${w.ar}')">🔊</button>
+                    `;
+                    card.classList.add('flipped');
+                }
+            };
+            flashcards.appendChild(card);
+        });
+
+        // Ovoz chiqarish funksiyasi (arab tili)
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                const msg = new SpeechSynthesisUtterance(text);
+                msg.lang = 'ar-SA';
+                window.speechSynthesis.speak(msg);
+            }
+        }
+    </script>
+</body>
+
+</html>
